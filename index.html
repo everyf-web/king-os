@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>King OS V1.1</title>
+<title>King OS V1.2</title>
 <link rel="manifest" href="manifest.webmanifest">
 <style>
 :root{--bg:#090b10;--panel:#12151c;--panel2:#181c25;--panel3:#202530;--text:#f4f5f7;--muted:#8e96a5;--line:#2a303b;--gold:#d8b66a;--green:#68d58a;--red:#e27479;--yellow:#e2c46f;--blue:#7aa8e8;--shadow:0 18px 48px rgba(0,0,0,.28)}
@@ -83,13 +83,14 @@
 <div class="modal-wrap" id="settingsModal"><section class="modal"><div class="modal-head"><div><h3>Планы и настройки</h3></div><button class="icon-btn" data-close="settingsModal">×</button></div><form id="settingsForm"></form><div class="quick-actions"><button class="btn" id="exportBtn">Экспорт</button><label class="btn" style="text-align:center" for="importFile">Импорт</label><input type="file" id="importFile" accept="application/json,.json" hidden></div></section></div>
 <div class="toast" id="toast"></div>
 
+<script>window.addEventListener('error',function(e){try{var t=document.getElementById('toast');if(t){t.textContent='Ошибка King OS: '+(e.message||'неизвестная ошибка');t.classList.add('show')}}catch(_){}});</script>
 <script>
 const KEY='king_os_v1';
 const LEGACY_KEY='regime_tracker_v2';
 const monthNames=['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
 const monthGen=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
 const weekNames=['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
-let db=loadDB();
+let db;
 let currentView='today';
 let calDate=new Date();
 let activeWorkoutId=null;
@@ -201,6 +202,7 @@ function loadDB(){
   localStorage.setItem(KEY,JSON.stringify(fresh));return fresh;
 }
 function normalizeDB(x){const base=seedDB();for(const k of Object.keys(base))if(x[k]===undefined)x[k]=base[k];x.settings={...base.settings,...x.settings};installDefaultTrainingPlan(x);x.schemaVersion=2;return x}
+db=loadDB();
 
 function getWorkEntry(date,projectId){return db.workEntries.find(x=>x.date===date&&x.projectId===projectId)}
 function ensureWorkEntry(date,projectId){let x=getWorkEntry(date,projectId);if(!x){x={id:uid('work'),date,projectId,completed:false,note:'',updatedAt:nowISO()};db.workEntries.push(x)}return x}
