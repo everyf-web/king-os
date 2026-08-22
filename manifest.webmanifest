@@ -2,6 +2,7 @@
   "name": "King OS",
   "short_name": "King OS",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#090b10",
   "theme_color": "#090b10",
