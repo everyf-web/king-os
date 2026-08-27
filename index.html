@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>King OS V1.6.1</title>
+<title>King OS V1.6.2</title>
 <link rel="manifest" href="manifest.webmanifest">
 <style>
 :root{--bg:#090b10;--panel:#12151c;--panel2:#181c25;--panel3:#202530;--text:#f4f5f7;--muted:#8e96a5;--line:#2a303b;--gold:#d8b66a;--green:#68d58a;--red:#e27479;--yellow:#e2c46f;--blue:#7aa8e8;--shadow:0 18px 48px rgba(0,0,0,.28)}
@@ -46,7 +46,7 @@
         const keys=await caches.keys();
         await Promise.all(keys.map(k=>caches.delete(k)));
       }
-      location.replace(location.pathname+'?v=161');
+      location.replace(location.pathname+'?v=162');
     }
   }catch(e){
     console.error('King OS cache repair failed',e);
@@ -58,7 +58,7 @@
 <body>
 <main class="app" id="app">
   <header class="header">
-    <div><div class="brand">KING <span>OS</span></div><div class="date"><span id="headerDate"></span> · V1.6.1</div></div>
+    <div><div class="brand">KING <span>OS</span></div><div class="date"><span id="headerDate"></span> · V1.6.2</div></div>
     <div class="top-actions"><button class="btn" id="reviewBtn">Review</button><button class="icon-btn" id="settingsBtn">⚙</button></div>
   </header>
 
@@ -340,7 +340,52 @@ function openModal(id){document.getElementById(id).classList.add('open');documen
 function toast(t){const el=document.getElementById('toast');el.textContent=t;el.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove('show'),1800)}
 function esc(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}function attr(v=''){return esc(v)}function short(v,n){v=String(v);return v.length>n?v.slice(0,n-1)+'…':v}
 
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=161',{updateViaCache:'none'}).catch(()=>{}));
+
+function bindStaticUI(){
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    b.onclick=()=>setView(b.dataset.nav);
+  });
+
+  document.querySelectorAll('[data-tabs="sport"] .subtab').forEach(b=>{
+    b.onclick=()=>{
+      document.querySelectorAll('[data-tabs="sport"] .subtab').forEach(x=>x.classList.toggle('active',x===b));
+      document.querySelectorAll('[data-sport]').forEach(x=>x.classList.toggle('active',x.dataset.sport===b.dataset.sub));
+    };
+  });
+
+  const settingsBtn=document.getElementById('settingsBtn');
+  if(settingsBtn) settingsBtn.onclick=()=>{renderSettings();openModal('settingsModal');};
+
+  const exportBtn=document.getElementById('exportBtn');
+  if(exportBtn) exportBtn.onclick=()=>{
+    const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`king-os-${isoDate()}.json`;
+    document.body.appendChild(a);
+    a.click();a.remove();URL.revokeObjectURL(url);
+    toast('Резервная копия сохранена');
+  };
+
+  const importFile=document.getElementById('importFile');
+  if(importFile) importFile.onchange=e=>{
+    const f=e.target.files?.[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=()=>{
+      try{
+        const parsed=JSON.parse(r.result);
+        if(!parsed||!parsed.settings)throw new Error();
+        db=normalizeDB(parsed);saveDB();render();toast('Данные импортированы');
+      }catch(err){toast('Не удалось прочитать файл')}
+      e.target.value='';
+    };
+    r.readAsText(f);
+  };
+}
+
+bindStaticUI();
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=162',{updateViaCache:'none'}).catch(()=>{}));
 render();
 </script>
 </body>
