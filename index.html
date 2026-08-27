@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>King OS V1.6.2</title>
+<title>King OS V1.7</title>
 <link rel="manifest" href="manifest.webmanifest">
 <style>
 :root{--bg:#090b10;--panel:#12151c;--panel2:#181c25;--panel3:#202530;--text:#f4f5f7;--muted:#8e96a5;--line:#2a303b;--gold:#d8b66a;--green:#68d58a;--red:#e27479;--yellow:#e2c46f;--blue:#7aa8e8;--shadow:0 18px 48px rgba(0,0,0,.28)}
@@ -46,7 +46,7 @@
         const keys=await caches.keys();
         await Promise.all(keys.map(k=>caches.delete(k)));
       }
-      location.replace(location.pathname+'?v=162');
+      location.replace(location.pathname+'?v=17');
     }
   }catch(e){
     console.error('King OS cache repair failed',e);
@@ -58,7 +58,7 @@
 <body>
 <main class="app" id="app">
   <header class="header">
-    <div><div class="brand">KING <span>OS</span></div><div class="date"><span id="headerDate"></span> · V1.6.2</div></div>
+    <div><div class="brand">KING <span>OS</span></div><div class="date"><span id="headerDate"></span> · V1.7</div></div>
     <div class="top-actions"><button class="btn" id="reviewBtn">Review</button><button class="icon-btn" id="settingsBtn">⚙</button></div>
   </header>
 
@@ -153,15 +153,14 @@ function saveDB(){localStorage.setItem(KEY,JSON.stringify(db))}
 const DEFAULT_EXERCISES=[
 {id:'ex_a_press_db30',name:'Жим гантелей лёжа 30°'},
 {id:'ex_a_pullups',name:'Подтягивания своим весом / с резиной'},
-{id:'ex_leg_press',name:'Жим ногами'},
-{id:'ex_a_chest_supported_row',name:'Горизонтальная тяга с упором в грудь'},
+{id:'ex_seated_leg_curl',name:'Сгибание ног в тренажёре сидя'},
+{id:'ex_b_lever_row',name:'Горизонтальная рычажная тяга - двумя руками'},
 {id:'ex_a_lateral_cable',name:'Разведения рук в кроссовере на среднюю дельту'},
 {id:'ex_incline_db_curl',name:'Сгибания гантелей на наклонной лавке'},
 {id:'ex_overhead_triceps',name:'Разгибание рук над головой на трицепс'},
 {id:'ex_pec_deck',name:'Бабочка'},
-{id:'ex_b_lever_row',name:'Рычажная горизонтальная тяга'},
 {id:'ex_smith_ohp',name:'Жим над головой сидя в Смите'},
-{id:'ex_seated_leg_curl',name:'Сгибание ног в тренажёре сидя'},
+{id:'ex_leg_extension',name:'Разгибания ног в тренажёре'},
 {id:'ex_converging_chest_press',name:'Грудной жим со сведением'},
 {id:'ex_smith_upright_row',name:'Протяжка со штангой в Смите'},
 {id:'ex_barbell_curl',name:'Сгибание штанги стоя на бицепс'},
@@ -175,36 +174,36 @@ const DEFAULT_EXERCISES=[
 {id:'ex_preacher_curl',name:'Бицепс на скамье Скотта'},
 {id:'ex_french_press',name:'Французский жим'},
 {id:'ex_lying_leg_curl',name:'Сгибания ног лёжа'},
+{id:'ex_leg_press',name:'Жим ногами'},
 {id:'ex_assisted_pullups',name:'Подтягивания с противовесом'},
-{id:'ex_machine_chest_press',name:'Грудной жим в тренажёре'},
-{id:'ex_leg_extension',name:'Разгибания ног'},
-{id:'ex_d_lever_chest_supported_row',name:'Горизонтальная рычажная тяга с упором в грудь'},
+{id:'ex_incline_converging_chest_press',name:'Грудной жим со сведением под углом'},
+{id:'ex_one_arm_lever_row',name:'Горизонтальная рычажная тяга - одной рукой'},
 {id:'ex_upright_row',name:'Протяжка со штангой'},
 {id:'ex_hammer_curl',name:'Молотковые сгибания'},
 {id:'ex_triceps_extension',name:'Разгибания на трицепс'}
 ];
 const DEFAULT_TEMPLATES=[
-{id:'tpl_a',programId:'program_main',name:'Full Body A — грудь + спина',order:0,exercisePlans:[
+{id:'tpl_a',programId:'program_main',name:'Full Body A',order:0,exercisePlans:[
 {exerciseId:'ex_a_press_db30',sets:3,minReps:6,maxReps:10,note:''},
 {exerciseId:'ex_a_pullups',sets:3,minReps:3,maxReps:6,note:''},
-{exerciseId:'ex_leg_press',sets:3,minReps:8,maxReps:12,note:''},
-{exerciseId:'ex_a_chest_supported_row',sets:2,minReps:8,maxReps:12,note:''},
+{exerciseId:'ex_seated_leg_curl',sets:2,minReps:10,maxReps:15,note:''},
+{exerciseId:'ex_b_lever_row',sets:2,minReps:8,maxReps:12,note:''},
 {exerciseId:'ex_a_lateral_cable',sets:2,minReps:12,maxReps:20,note:''},
 {exerciseId:'ex_incline_db_curl',sets:2,minReps:8,maxReps:12,note:''},
 {exerciseId:'ex_overhead_triceps',sets:2,minReps:8,maxReps:12,note:''},
 {exerciseId:'ex_pec_deck',sets:2,minReps:10,maxReps:15,note:''}
 ]},
-{id:'tpl_b',programId:'program_main',name:'Full Body B — спина + плечи',order:1,exercisePlans:[
+{id:'tpl_b',programId:'program_main',name:'Full Body B',order:1,exercisePlans:[
 {exerciseId:'ex_b_lever_row',sets:3,minReps:6,maxReps:10,note:''},
 {exerciseId:'ex_smith_ohp',sets:3,minReps:6,maxReps:10,note:''},
-{exerciseId:'ex_seated_leg_curl',sets:3,minReps:8,maxReps:12,note:''},
+{exerciseId:'ex_leg_extension',sets:2,minReps:10,maxReps:15,note:''},
 {exerciseId:'ex_converging_chest_press',sets:2,minReps:8,maxReps:12,note:''},
-{exerciseId:'ex_smith_upright_row',sets:2,minReps:12,maxReps:20,note:''},
+{exerciseId:'ex_smith_upright_row',sets:2,minReps:10,maxReps:15,note:''},
 {exerciseId:'ex_barbell_curl',sets:2,minReps:8,maxReps:12,note:''},
 {exerciseId:'ex_cable_triceps',sets:2,minReps:10,maxReps:15,note:''},
 {exerciseId:'ex_reverse_pec_deck',sets:2,minReps:12,maxReps:20,note:''}
 ]},
-{id:'tpl_c',programId:'program_main',name:'Full Body C — грудь + руки',order:2,exercisePlans:[
+{id:'tpl_c',programId:'program_main',name:'Full Body C',order:2,exercisePlans:[
 {exerciseId:'ex_smith_incline_press',sets:3,minReps:6,maxReps:10,note:''},
 {exerciseId:'ex_lat_pulldown',sets:3,minReps:8,maxReps:12,note:''},
 {exerciseId:'ex_bulgarian_split_squat',sets:2,minReps:8,maxReps:12,note:'на ногу'},
@@ -214,12 +213,12 @@ const DEFAULT_TEMPLATES=[
 {exerciseId:'ex_french_press',sets:3,minReps:8,maxReps:12,note:''},
 {exerciseId:'ex_lying_leg_curl',sets:2,minReps:10,maxReps:15,note:''}
 ]},
-{id:'tpl_d',programId:'program_main',name:'Full Body D — спина + плечи + руки',order:3,exercisePlans:[
+{id:'tpl_d',programId:'program_main',name:'Full Body D',order:3,exercisePlans:[
+{exerciseId:'ex_leg_press',sets:3,minReps:8,maxReps:12,note:''},
 {exerciseId:'ex_assisted_pullups',sets:2,minReps:8,maxReps:12,note:''},
-{exerciseId:'ex_machine_chest_press',sets:3,minReps:8,maxReps:12,note:''},
-{exerciseId:'ex_leg_extension',sets:2,minReps:10,maxReps:15,note:''},
-{exerciseId:'ex_d_lever_chest_supported_row',sets:2,minReps:8,maxReps:12,note:''},
-{exerciseId:'ex_upright_row',sets:3,minReps:12,maxReps:20,note:''},
+{exerciseId:'ex_incline_converging_chest_press',sets:3,minReps:8,maxReps:12,note:''},
+{exerciseId:'ex_one_arm_lever_row',sets:2,minReps:8,maxReps:12,note:''},
+{exerciseId:'ex_upright_row',sets:3,minReps:10,maxReps:15,note:''},
 {exerciseId:'ex_hammer_curl',sets:2,minReps:10,maxReps:15,note:''},
 {exerciseId:'ex_triceps_extension',sets:2,minReps:10,maxReps:15,note:''},
 {exerciseId:'ex_pec_deck',sets:2,minReps:10,maxReps:15,note:''}
@@ -236,6 +235,41 @@ function installDefaultTrainingPlan(target){
   if(emptyOrOld){target.workoutTemplates=target.workoutTemplates.filter(t=>!['tpl_a','tpl_b','tpl_c','tpl_d'].includes(t.id)).concat(defaultTemplates())}
   return target;
 }
+function applyTrainingPlanV17(target){
+  if(target.settings?.trainingPlanV17Applied)return target;
+  target.exercises=target.exercises||[];
+  const exerciseMap=new Map(target.exercises.map(e=>[e.id,e]));
+
+  // Same physical exercises keep the old IDs, so their set history stays attached.
+  for(const def of DEFAULT_EXERCISES){
+    const existing=exerciseMap.get(def.id);
+    if(existing){existing.name=def.name;existing.archived=false}
+    else target.exercises.push({...def,archived:false,createdAt:nowISO()});
+  }
+
+  // These exercises were removed from the active program. Keep them in storage/history only.
+  for(const id of ['ex_a_chest_supported_row','ex_machine_chest_press','ex_d_lever_chest_supported_row']){
+    const old=target.exercises.find(e=>e.id===id);
+    if(old)old.archived=true;
+  }
+
+  target.workoutTemplates=target.workoutTemplates||[];
+  for(const def of defaultTemplates()){
+    const current=target.workoutTemplates.find(t=>t.id===def.id);
+    if(current){
+      current.name=def.name;
+      current.order=def.order;
+      current.programId=def.programId;
+      current.exercisePlans=def.exercisePlans.map(x=>({...x}));
+      current.exerciseIds=[...def.exerciseIds];
+    }else target.workoutTemplates.push(def);
+  }
+
+  // Existing completed/active workouts are intentionally untouched: they keep their historical snapshot.
+  target.settings.trainingPlanV17Applied=true;
+  return target;
+}
+
 function seedDB(){
   const start=isoDate();
   return installDefaultTrainingPlan({schemaVersion:2,settings:{startDate:start,readingDailyMin:15,workDailyHours:10,waistWeekday:0,photoIntervalDays:14,photoAnchorDate:start},readingPlans:[{id:'reading_1',startDate:start,endDate:null,minutes:15}],projects:[{id:'every',name:'ЭВЕРИ',goal:'',state:'',dynamic:false},{id:'dark_every',name:'Dark EVERY',goal:'',state:'',dynamic:false},{id:'project3',name:'Проект 3',goal:'',state:'',dynamic:true}],workEntries:[],books:[],readingSessions:[],readingOverrides:[],readingNotes:[],exercises:[],programs:[{id:'program_main',name:'Full Body A–D',active:true,sequence:['tpl_a','tpl_b','tpl_c','tpl_d']}],workoutTemplates:defaultTemplates(),workouts:[],sets:[],sportDaily:[],nutritionPlans:[{id:'nutrition_1',startDate:start,endDate:null,kcal:0,protein:0,fat:0,carbs:0}],dailyNutrition:[],measurements:[],scheduledChecks:[],regimeDaily:[],dayNotes:[]});
@@ -246,7 +280,7 @@ function loadDB(){
   try{const legacyRaw=localStorage.getItem(LEGACY_KEY);if(legacyRaw){const old=JSON.parse(legacyRaw);fresh.settings.startDate='2026-08-21';fresh.settings.photoAnchorDate='2026-08-21';Object.entries(old.days||{}).forEach(([date,v])=>{if(v.every)fresh.workEntries.push({id:uid('work'),date,projectId:'every',completed:true,note:'',updatedAt:nowISO()});if(v.dark_every)fresh.workEntries.push({id:uid('work'),date,projectId:'dark_every',completed:true,note:'',updatedAt:nowISO()});if(v.boxing||v.sport_rest)fresh.sportDaily.push({date,boxing:!!v.boxing,rest:!!v.sport_rest});if(v.strength){fresh.workouts.push({id:uid('wo'),date,templateId:null,name:'Силовая',status:'completed',startedAt:null,endedAt:null,exerciseIds:[]})}if(v.porn||v.masturbation)fresh.regimeDaily.push({date,porn:!!v.porn,masturbation:!!v.masturbation});if(v.comment)fresh.dayNotes.push({date,text:v.comment})});}}catch(e){}
   localStorage.setItem(KEY,JSON.stringify(fresh));return fresh;
 }
-function normalizeDB(x){const base=seedDB();for(const k of Object.keys(base))if(x[k]===undefined)x[k]=base[k];x.settings={...base.settings,...x.settings};if(!Number(x.settings.workDailyHours))x.settings.workDailyHours=10;if(!x.projects.some(p=>p.id==='project3'))x.projects.push({id:'project3',name:'Проект 3',goal:'',state:'',dynamic:true});x.projects.forEach(p=>{if(p.dynamic===undefined)p.dynamic=p.id==='project3'});(x.workEntries||[]).forEach(e=>{if(e.hours===undefined)e.hours=0;if(e.dailyTitle===undefined)e.dailyTitle=''});installDefaultTrainingPlan(x);if(!x.settings.workoutCycleV15Initialized){for(const w of (x.workouts||[]).filter(w=>w.status==='active')){const entered=(x.sets||[]).some(s=>s.workoutId===w.id&&(Number(s.weight||0)>0||Number(s.reps||0)>0));if(!entered)w.status='cancelled'}x.settings.nextWorkoutTemplateId='tpl_c';x.settings.workoutCycleV15Initialized=true}x.schemaVersion=4;return x}
+function normalizeDB(x){const base=seedDB();for(const k of Object.keys(base))if(x[k]===undefined)x[k]=base[k];x.settings={...base.settings,...x.settings};if(!Number(x.settings.workDailyHours))x.settings.workDailyHours=10;if(!x.projects.some(p=>p.id==='project3'))x.projects.push({id:'project3',name:'Проект 3',goal:'',state:'',dynamic:true});x.projects.forEach(p=>{if(p.dynamic===undefined)p.dynamic=p.id==='project3'});(x.workEntries||[]).forEach(e=>{if(e.hours===undefined)e.hours=0;if(e.dailyTitle===undefined)e.dailyTitle=''});installDefaultTrainingPlan(x);applyTrainingPlanV17(x);if(!x.settings.workoutCycleV15Initialized){for(const w of (x.workouts||[]).filter(w=>w.status==='active')){const entered=(x.sets||[]).some(s=>s.workoutId===w.id&&(Number(s.weight||0)>0||Number(s.reps||0)>0));if(!entered)w.status='cancelled'}x.settings.nextWorkoutTemplateId='tpl_c';x.settings.workoutCycleV15Initialized=true}x.schemaVersion=5;return x}
 db=loadDB();
 function getWorkEntry(date,projectId){return db.workEntries.find(x=>x.date===date&&x.projectId===projectId)}
 function ensureWorkEntry(date,projectId){let x=getWorkEntry(date,projectId);if(!x){x={id:uid('work'),date,projectId,completed:false,hours:0,note:'',dailyTitle:'',updatedAt:nowISO()};db.workEntries.push(x)}if(x.hours===undefined)x.hours=0;if(x.dailyTitle===undefined)x.dailyTitle='';return x}
@@ -311,7 +345,7 @@ function finishWorkout(id){const w=db.workouts.find(x=>x.id===id);if(!w)return;w
 function previousExerciseResult(exerciseId,date,currentId){const workouts=db.workouts.filter(w=>w.id!==currentId&&w.status==='completed'&&w.date<=date&&db.sets.some(s=>s.workoutId===w.id&&s.exerciseId===exerciseId)).sort((a,b)=>(b.endedAt||b.date).localeCompare(a.endedAt||a.date));if(!workouts.length)return'';return db.sets.filter(s=>s.workoutId===workouts[0].id&&s.exerciseId===exerciseId).sort((a,b)=>a.setNo-b.setNo).map(s=>`${s.weight}×${s.reps}`).join(' / ')}
 function editProgram(){const t=nextTemplate()||db.workoutTemplates[0];if(!t)return;const current=t.exerciseIds.map(id=>db.exercises.find(e=>e.id===id)?.name).filter(Boolean).join(', ')||'пусто';const action=confirm(`${t.name}\nСейчас: ${current}\n\nOK — добавить упражнение в этот шаблон`);if(action){openExerciseModal(ex=>{if(!t.exerciseIds.includes(ex.id))t.exerciseIds.push(ex.id);saveDB();renderSport();toast('Упражнение добавлено в '+t.name)})}}
 
-function renderExercises(){const el=document.getElementById('sportExercises');el.innerHTML=`<div class="card"><div class="row"><div class="row-main"><strong>Библиотека упражнений</strong><span>${db.exercises.length} упражнений</span></div><button class="btn primary" id="newExercise">+ Добавить</button></div>${db.exercises.length?db.exercises.map(e=>{const history=exerciseHistory(e.id);return `<div class="history-item" data-ex-history="${e.id}"><strong>${esc(e.name)}</strong><div class="meta">${history[0]?.summary||'Нет результатов'}</div></div>`}).join(''):'<div class="empty">Добавь первое упражнение — дальше King OS начнёт собирать его историю.</div>'}</div>`;document.getElementById('newExercise')?.addEventListener('click',()=>openExerciseModal(()=>render()));document.querySelectorAll('[data-ex-history]').forEach(x=>x.addEventListener('click',()=>showExerciseHistory(x.dataset.exHistory)))}
+function renderExercises(){const el=document.getElementById('sportExercises'),active=db.exercises.filter(e=>!e.archived),archived=db.exercises.filter(e=>e.archived);const row=e=>{const history=exerciseHistory(e.id);return `<div class="history-item" data-ex-history="${e.id}"><strong>${esc(e.name)}</strong><div class="meta">${history[0]?.summary||'Нет результатов'}</div></div>`};el.innerHTML=`<div class="card"><div class="row"><div class="row-main"><strong>Текущие упражнения</strong><span>${active.length} упражнений</span></div><button class="btn primary" id="newExercise">+ Добавить</button></div>${active.length?active.map(row).join(''):'<div class="empty">Пока нет упражнений.</div>'}${archived.length?`<details class="details-box"><summary>Архив старых упражнений (${archived.length})</summary>${archived.map(row).join('')}</details>`:''}</div>`;document.getElementById('newExercise')?.addEventListener('click',()=>openExerciseModal(()=>render()));document.querySelectorAll('[data-ex-history]').forEach(x=>x.addEventListener('click',()=>showExerciseHistory(x.dataset.exHistory)))}
 function exerciseHistory(id){return db.workouts.filter(w=>w.status==='completed'&&db.sets.some(s=>s.workoutId===w.id&&s.exerciseId===id)).sort((a,b)=>(b.endedAt||b.date).localeCompare(a.endedAt||a.date)).map(w=>({date:w.date,summary:db.sets.filter(s=>s.workoutId===w.id&&s.exerciseId===id).sort((a,b)=>a.setNo-b.setNo).map(s=>`${s.weight}×${s.reps}`).join(' / ')}))}
 function showExerciseHistory(id){const e=db.exercises.find(x=>x.id===id),h=exerciseHistory(id);document.getElementById('dayModalTitle').textContent=e?.name||'Упражнение';document.getElementById('dayModalBody').innerHTML=h.length?h.map(x=>`<div class="history-item"><div class="meta">${fmtDate(x.date)}</div><p>${esc(x.summary)}</p></div>`).join(''):'<div class="empty">Истории пока нет.</div>';openModal('dayModal')}
 function openExerciseModal(onSave){document.getElementById('exerciseForm').innerHTML=`<label class="field"><span>Название</span><input id="exerciseName" required placeholder="Например, жим гантелей 30°"></label><button class="btn primary" style="width:100%;margin-top:12px" type="submit">Сохранить</button>`;const form=document.getElementById('exerciseForm');form.onsubmit=e=>{e.preventDefault();const name=document.getElementById('exerciseName').value.trim();if(!name)return;const ex={id:uid('ex'),name,createdAt:nowISO()};db.exercises.push(ex);saveDB();closeModal('exerciseModal');onSave?.(ex);render()};openModal('exerciseModal')}
@@ -354,7 +388,10 @@ function bindStaticUI(){
   });
 
   const settingsBtn=document.getElementById('settingsBtn');
-  if(settingsBtn) settingsBtn.onclick=()=>{renderSettings();openModal('settingsModal');};
+  if(settingsBtn) settingsBtn.onclick=()=>{
+    renderSettings();
+    openModal('settingsModal');
+  };
 
   const exportBtn=document.getElementById('exportBtn');
   if(exportBtn) exportBtn.onclick=()=>{
@@ -364,20 +401,28 @@ function bindStaticUI(){
     a.href=url;
     a.download=`king-os-${isoDate()}.json`;
     document.body.appendChild(a);
-    a.click();a.remove();URL.revokeObjectURL(url);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
     toast('Резервная копия сохранена');
   };
 
   const importFile=document.getElementById('importFile');
   if(importFile) importFile.onchange=e=>{
-    const f=e.target.files?.[0];if(!f)return;
+    const f=e.target.files?.[0];
+    if(!f)return;
     const r=new FileReader();
     r.onload=()=>{
       try{
         const parsed=JSON.parse(r.result);
         if(!parsed||!parsed.settings)throw new Error();
-        db=normalizeDB(parsed);saveDB();render();toast('Данные импортированы');
-      }catch(err){toast('Не удалось прочитать файл')}
+        db=normalizeDB(parsed);
+        saveDB();
+        render();
+        toast('Данные импортированы');
+      }catch(err){
+        toast('Не удалось прочитать файл');
+      }
       e.target.value='';
     };
     r.readAsText(f);
@@ -385,7 +430,7 @@ function bindStaticUI(){
 }
 
 bindStaticUI();
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=162',{updateViaCache:'none'}).catch(()=>{}));
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=17',{updateViaCache:'none'}).catch(()=>{}));
 render();
 </script>
 </body>
