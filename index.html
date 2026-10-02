@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#090b10">
-<title>King OS V2.5</title>
+<title>King OS V2.6</title>
 <link rel="manifest" href="manifest.webmanifest">
 <style>
 :root{--bg:#090b10;--panel:#12151c;--panel2:#181c25;--panel3:#202530;--text:#f4f5f7;--muted:#8e96a5;--line:#2a303b;--gold:#d8b66a;--green:#68d58a;--red:#e27479;--yellow:#e2c46f;--blue:#7aa8e8;--shadow:0 18px 48px rgba(0,0,0,.28)}
@@ -154,7 +154,7 @@
 @media(max-width:390px){.set-row{grid-template-columns:24px 1fr 1fr .72fr 32px!important;gap:4px!important}.set-row input{font-size:12px}.set-row .mini-btn{width:32px}}
 
 
-/* V2.5 — strict sleep + weekly sport + declutter */
+/* V2.6 — current training program */
 .sleep-rule{padding:9px 0;border-bottom:1px solid var(--line)}
 .sleep-rule:last-child{border-bottom:0}
 .sleep-rule-head{font-size:13px;font-weight:850;margin-bottom:7px}
@@ -180,7 +180,7 @@
         const keys=await caches.keys();
         await Promise.all(keys.map(k=>caches.delete(k)));
       }
-      location.replace(location.pathname+'?v=25');
+      location.replace(location.pathname+'?v=26');
     }
   }catch(e){
     console.error('King OS cache repair failed',e);
@@ -192,7 +192,7 @@
 <body>
 <main class="app" id="app">
   <header class="header">
-    <div><div class="brand">KING <span>OS</span></div><div class="date"><span id="headerDate"></span> · V2.5</div></div>
+    <div><div class="brand">KING <span>OS</span></div><div class="date"><span id="headerDate"></span> · V2.6</div></div>
     <div class="top-actions"><button class="btn" id="reviewBtn">Review</button><button class="icon-btn" id="settingsBtn">⚙</button></div>
   </header>
 
@@ -297,79 +297,82 @@ function saveDB(){localStorage.setItem(KEY,JSON.stringify(db))}
 const DEFAULT_EXERCISES=[
 {id:'ex_a_press_db30',name:'Жим гантелей лёжа 30°'},
 {id:'ex_pullups_band',name:'Подтягивания с резиной',historyIds:['ex_a_pullups','ex_assisted_pullups']},
-{id:'ex_seated_leg_curl',name:'Сгибание ног сидя'},
+{id:'ex_romanian_deadlift',name:'Румынская тяга'},
 {id:'ex_b_lever_row',name:'Тяга с упором в грудь — верх/середина спины'},
 {id:'ex_a_lateral_cable',name:'Разведения рук в кроссовере на среднюю дельту',historyIds:['ex_c_lateral_cable']},
 {id:'ex_incline_db_curl',name:'Сгибания гантелей на наклонной лавке'},
 {id:'ex_overhead_triceps',name:'Разгибания рук над головой на трицепс'},
-{id:'ex_calf_raise',name:'Подъём на носки в Смите / тренажёре'},
+{id:'ex_seated_leg_curl',name:'Сгибание ног сидя'},
 {id:'ex_straight_arm_pulldown',name:'Прямая тяга сверху на широчайшие'},
-{id:'ex_leg_press',name:'Жим ногами'},
 {id:'ex_lat_pulldown',name:'Вертикальная тяга'},
 {id:'ex_converging_chest_press',name:'Грудной жим со сведением — горизонтальный'},
-{id:'ex_one_arm_chest_supported_lat_row',name:'Горизонтальная тяга с упором в грудь — широчайшие'},
+{id:'ex_leg_press',name:'Жим ногами'},
+{id:'ex_one_arm_chest_supported_lat_row',name:'Тяга с упором в грудь — на широчайшие'},
 {id:'ex_smith_ohp',name:'Жим над головой сидя в Смите'},
 {id:'ex_reverse_pec_deck',name:'Обратная бабочка'},
 {id:'ex_barbell_curl',name:'Сгибание штанги стоя на бицепс'},
 {id:'ex_cable_triceps',name:'Разгибания на трицепс в блоке',historyIds:['ex_triceps_extension']},
 {id:'ex_upright_row',name:'Протяжка со штангой'},
 {id:'ex_smith_incline_press',name:'Жим в Смите на наклонной скамье'},
-{id:'ex_leg_extension',name:'Разгибания ног сидя'},
+{id:'ex_hack_squat',name:'Гакк-присед'},
 {id:'ex_c_cable_row',name:'Горизонтальная тяга с блока'},
+{id:'ex_leg_extension',name:'Разгибания ног сидя'},
 {id:'ex_preacher_curl',name:'Сгибания рук со штангой на скамье Скотта'},
 {id:'ex_french_press',name:'Французский жим'},
 {id:'ex_incline_converging_chest_press',name:'Наклонный грудной жим со сведением'},
-{id:'ex_bulgarian_split_squat',name:'Болгарские выпады'},
 {id:'ex_pec_deck',name:'Бабочка'},
-{id:'ex_hammer_curl',name:'Молотковые сгибания'},
-{id:'ex_hyperextension',name:'Гиперэкстензия'}
+{id:'ex_bulgarian_split_squat',name:'Болгарские выпады'},
+{id:'ex_hammer_curl',name:'Молотковые сгибания'}
 ];
 const DEFAULT_TEMPLATES=[
 {id:'tpl_a',programId:'program_main',name:'Full Body A',order:0,exercisePlans:[
 {label:'1',exerciseId:'ex_a_press_db30',sets:3,minReps:6,maxReps:10,note:''},
 {label:'2',exerciseId:'ex_pullups_band',sets:2,minReps:5,maxReps:8,note:''},
-{label:'3',exerciseId:'ex_seated_leg_curl',sets:3,minReps:10,maxReps:15,note:''},
-{label:'4',exerciseId:'ex_b_lever_row',sets:2,minReps:8,maxReps:12,note:''},
+{label:'3',exerciseId:'ex_romanian_deadlift',sets:3,minReps:6,maxReps:10,note:''},
+{label:'4',exerciseId:'ex_b_lever_row',sets:2,minReps:8,maxReps:12,note:'Низкое сиденье, горизонтальный хват, двумя руками, локти шире.'},
 {label:'5',exerciseId:'ex_a_lateral_cable',sets:3,minReps:12,maxReps:20,note:''},
 {label:'6A',exerciseId:'ex_incline_db_curl',sets:2,minReps:8,maxReps:12,note:'суперсет с 6B'},
 {label:'6B',exerciseId:'ex_overhead_triceps',sets:2,minReps:8,maxReps:12,note:'суперсет с 6A'},
-{label:'7',exerciseId:'ex_calf_raise',sets:2,minReps:10,maxReps:20,note:''}
-],options:[{kind:'Опционально',exerciseId:'ex_straight_arm_pulldown',sets:2,minReps:12,maxReps:15,note:''}]},
+{label:'7',exerciseId:'ex_seated_leg_curl',sets:2,minReps:10,maxReps:15,note:''}
+],options:[
+{kind:'Опционально',exerciseId:'ex_straight_arm_pulldown',sets:2,minReps:12,maxReps:15,note:''}
+]},
 {id:'tpl_b',programId:'program_main',name:'Full Body B',order:1,exercisePlans:[
-{label:'1',exerciseId:'ex_leg_press',sets:3,minReps:8,maxReps:12,note:''},
-{label:'2',exerciseId:'ex_lat_pulldown',sets:2,minReps:8,maxReps:12,note:''},
-{label:'3',exerciseId:'ex_converging_chest_press',sets:3,minReps:8,maxReps:12,note:''},
-{label:'4',exerciseId:'ex_one_arm_chest_supported_lat_row',sets:2,minReps:8,maxReps:12,note:'на руку'},
+{label:'1',exerciseId:'ex_lat_pulldown',sets:2,minReps:8,maxReps:12,note:''},
+{label:'2',exerciseId:'ex_converging_chest_press',sets:3,minReps:8,maxReps:12,note:''},
+{label:'3',exerciseId:'ex_leg_press',sets:3,minReps:8,maxReps:12,note:''},
+{label:'4',exerciseId:'ex_one_arm_chest_supported_lat_row',sets:2,minReps:8,maxReps:12,note:'на руку · Высокое сиденье, вертикальный/нейтральный хват, локоть близко к корпусу и движется к тазу.'},
 {label:'5',exerciseId:'ex_smith_ohp',sets:3,minReps:6,maxReps:10,note:''},
 {label:'6',exerciseId:'ex_reverse_pec_deck',sets:2,minReps:12,maxReps:20,note:''},
 {label:'7A',exerciseId:'ex_barbell_curl',sets:2,minReps:8,maxReps:12,note:'суперсет с 7B'},
 {label:'7B',exerciseId:'ex_cable_triceps',sets:2,minReps:10,maxReps:15,note:'суперсет с 7A'}
-],options:[{kind:'Опционально',exerciseId:'ex_upright_row',sets:2,minReps:10,maxReps:15,note:''}]},
+],options:[
+{kind:'Опционально',exerciseId:'ex_upright_row',sets:2,minReps:10,maxReps:15,note:''}
+]},
 {id:'tpl_c',programId:'program_main',name:'Full Body C',order:2,exercisePlans:[
 {label:'1',exerciseId:'ex_smith_incline_press',sets:3,minReps:6,maxReps:10,note:''},
 {label:'2',exerciseId:'ex_pullups_band',sets:2,minReps:5,maxReps:8,note:''},
-{label:'3',exerciseId:'ex_leg_extension',sets:3,minReps:10,maxReps:15,note:''},
-{label:'4',exerciseId:'ex_c_cable_row',sets:2,minReps:8,maxReps:12,note:''},
-{label:'5',exerciseId:'ex_a_lateral_cable',sets:3,minReps:12,maxReps:20,note:''},
-{label:'6A',exerciseId:'ex_preacher_curl',sets:2,minReps:8,maxReps:12,note:'суперсет с 6B'},
-{label:'6B',exerciseId:'ex_french_press',sets:2,minReps:8,maxReps:12,note:'суперсет с 6A'},
-{label:'7',exerciseId:'ex_calf_raise',sets:2,minReps:10,maxReps:20,note:''}
+{label:'3',exerciseId:'ex_hack_squat',sets:3,minReps:6,maxReps:10,note:''},
+{label:'4',exerciseId:'ex_c_cable_row',sets:2,minReps:8,maxReps:12,note:'Узкая/средняя нейтральная рукоять, корпус преимущественно вертикальный, локти близко к корпусу, тяга к нижней части живота.'},
+{label:'5',exerciseId:'ex_leg_extension',sets:2,minReps:10,maxReps:15,note:''},
+{label:'6',exerciseId:'ex_a_lateral_cable',sets:3,minReps:12,maxReps:20,note:''},
+{label:'7A',exerciseId:'ex_preacher_curl',sets:2,minReps:8,maxReps:12,note:'суперсет с 7B'},
+{label:'7B',exerciseId:'ex_french_press',sets:2,minReps:8,maxReps:12,note:'суперсет с 7A'}
 ],options:[
 {kind:'Замена груди',exerciseId:'ex_incline_converging_chest_press',sets:null,minReps:null,maxReps:null,note:'вместо жима в Смите'},
 {kind:'Опционально',exerciseId:'ex_straight_arm_pulldown',sets:2,minReps:12,maxReps:15,note:''}
 ]},
 {id:'tpl_d',programId:'program_main',name:'Full Body D',order:3,exercisePlans:[
-{label:'1',exerciseId:'ex_bulgarian_split_squat',sets:2,minReps:8,maxReps:12,note:'на ногу'},
-{label:'2',exerciseId:'ex_b_lever_row',sets:2,minReps:8,maxReps:12,note:''},
-{label:'3',exerciseId:'ex_pec_deck',sets:3,minReps:10,maxReps:15,note:''},
+{label:'1',exerciseId:'ex_b_lever_row',sets:2,minReps:8,maxReps:12,note:'Низкое сиденье, горизонтальный хват, двумя руками, локти шире.'},
+{label:'2',exerciseId:'ex_pec_deck',sets:3,minReps:10,maxReps:15,note:''},
+{label:'3',exerciseId:'ex_bulgarian_split_squat',sets:2,minReps:8,maxReps:12,note:'на ногу'},
 {label:'4',exerciseId:'ex_one_arm_chest_supported_lat_row',sets:2,minReps:8,maxReps:12,note:'на руку'},
 {label:'5',exerciseId:'ex_seated_leg_curl',sets:2,minReps:10,maxReps:15,note:''},
 {label:'6',exerciseId:'ex_reverse_pec_deck',sets:2,minReps:12,maxReps:20,note:''},
 {label:'7A',exerciseId:'ex_hammer_curl',sets:3,minReps:10,maxReps:15,note:'суперсет с 7B'},
 {label:'7B',exerciseId:'ex_cable_triceps',sets:3,minReps:10,maxReps:15,note:'суперсет с 7A'}
 ],options:[
-{kind:'Опционально',exerciseId:'ex_upright_row',sets:2,minReps:10,maxReps:15,note:''},
-{kind:'Опционально',exerciseId:'ex_hyperextension',sets:2,minReps:10,maxReps:15,note:''}
+{kind:'Опционально',exerciseId:'ex_upright_row',sets:2,minReps:10,maxReps:15,note:''}
 ]}
 ];
 const EVERY_DAILY_GOALS=[
@@ -641,6 +644,38 @@ function applyKingOSV25(target){
   return target;
 }
 
+function applyTrainingPlanV26(target){
+  if(target.settings?.trainingPlanV26Applied)return target;
+  target.exercises=target.exercises||[];
+  const activeIds=new Set(DEFAULT_EXERCISES.map(e=>e.id));
+  for(const def of DEFAULT_EXERCISES){
+    let e=target.exercises.find(x=>x.id===def.id);
+    if(!e){e={...def,createdAt:nowISO()};target.exercises.push(e)}
+    e.name=def.name;
+    e.archived=false;
+    if(def.historyIds)e.historyIds=[...def.historyIds];
+  }
+  // Removed from the current program, but their old history remains available.
+  for(const id of ['ex_calf_raise','ex_hyperextension']){
+    const e=target.exercises.find(x=>x.id===id);
+    if(e)e.archived=true;
+  }
+  target.workoutTemplates=target.workoutTemplates||[];
+  for(const def of defaultTemplates()){
+    let t=target.workoutTemplates.find(x=>x.id===def.id);
+    if(!t){target.workoutTemplates.push(def);continue}
+    t.name=def.name;
+    t.order=def.order;
+    t.programId=def.programId;
+    t.exercisePlans=def.exercisePlans.map(x=>({...x}));
+    t.options=(def.options||[]).map(x=>({...x}));
+    t.exerciseIds=[...def.exerciseIds];
+  }
+  // Completed and active workouts keep their historical snapshots and sets.
+  target.settings.trainingPlanV26Applied=true;
+  return target;
+}
+
 function seedDB(){
   const start=isoDate();
   return installDefaultTrainingPlan({schemaVersion:2,settings:{startDate:start,readingDailyMin:15,workDailyHours:9,waistWeekday:0,photoIntervalDays:14,photoAnchorDate:start},readingPlans:[{id:'reading_1',startDate:start,endDate:null,minutes:15}],projects:[{id:'every',name:'ЭВЕРИ',goal:'',state:'',dynamic:false,createdDate:start},{id:'project3',name:'Другое',goal:'',state:'',dynamic:true,createdDate:start}],workEntries:[],workDayMarks:[],workInbox:[],workTasks:[],workPlans:[{id:'work_every_goals_v20',startDate:start,endDate:null,mode:'every_goals'}],sleepDaily:[],books:[],readingSessions:[],readingOverrides:[],readingNotes:[],exercises:[],programs:[{id:'program_main',name:'Full Body A–D',active:true,sequence:['tpl_a','tpl_b','tpl_c','tpl_d']}],workoutTemplates:defaultTemplates(),workouts:[],sets:[],sportDaily:[],nutritionPlans:[{id:'nutrition_1',startDate:start,endDate:null,kcal:0,protein:0,fat:0,carbs:0}],dailyNutrition:[],measurements:[],scheduledChecks:[],regimeDaily:[],dayNotes:[],dayOffs:[]});
@@ -651,7 +686,7 @@ function loadDB(){
   try{const legacyRaw=localStorage.getItem(LEGACY_KEY);if(legacyRaw){const old=JSON.parse(legacyRaw);fresh.settings.startDate='2026-08-21';fresh.settings.photoAnchorDate='2026-08-21';Object.entries(old.days||{}).forEach(([date,v])=>{if(v.every)fresh.workEntries.push({id:uid('work'),date,projectId:'every',completed:true,note:'',updatedAt:nowISO()});if(v.dark_every)fresh.workEntries.push({id:uid('work'),date,projectId:'dark_every',completed:true,note:'',updatedAt:nowISO()});if(v.boxing||v.sport_rest)fresh.sportDaily.push({date,boxing:!!v.boxing,rest:!!v.sport_rest});if(v.strength){fresh.workouts.push({id:uid('wo'),date,templateId:null,name:'Силовая',status:'completed',startedAt:null,endedAt:null,exerciseIds:[]})}if(v.porn||v.masturbation)fresh.regimeDaily.push({date,porn:!!v.porn,masturbation:!!v.masturbation});if(v.comment)fresh.dayNotes.push({date,text:v.comment})});}}catch(e){}
   const normalized=normalizeDB(fresh);localStorage.setItem(KEY,JSON.stringify(normalized));return normalized;
 }
-function normalizeDB(x){const base=seedDB();for(const k of Object.keys(base))if(x[k]===undefined)x[k]=base[k];x.settings={...base.settings,...x.settings};if(!Number(x.settings.workDailyHours))x.settings.workDailyHours=10;if(!x.projects.some(p=>p.id==='project3'))x.projects.push({id:'project3',name:'Проект 3',goal:'',state:'',dynamic:true});x.projects.forEach(p=>{if(p.dynamic===undefined)p.dynamic=p.id==='project3'});(x.workEntries||[]).forEach(e=>{if(e.hours===undefined)e.hours=0;if(e.dailyTitle===undefined)e.dailyTitle=''});installDefaultTrainingPlan(x);applyTrainingPlanV17(x);applyTrainingPlanV18(x);applyKingOSV19(x);applyTrainingPlanV20(x);applyKingOSV20(x);applyKingOSV21(x);applyKingOSV22(x);applyKingOSV23(x);applyKingOSV24(x);applyKingOSV25(x);if(!x.settings.workoutCycleV15Initialized){for(const w of (x.workouts||[]).filter(w=>w.status==='active')){const entered=(x.sets||[]).some(s=>s.workoutId===w.id&&(Number(s.weight||0)>0||Number(s.reps||0)>0));if(!entered)w.status='cancelled'}x.settings.nextWorkoutTemplateId='tpl_c';x.settings.workoutCycleV15Initialized=true}x.schemaVersion=13;return x}
+function normalizeDB(x){const base=seedDB();for(const k of Object.keys(base))if(x[k]===undefined)x[k]=base[k];x.settings={...base.settings,...x.settings};if(!Number(x.settings.workDailyHours))x.settings.workDailyHours=10;if(!x.projects.some(p=>p.id==='project3'))x.projects.push({id:'project3',name:'Проект 3',goal:'',state:'',dynamic:true});x.projects.forEach(p=>{if(p.dynamic===undefined)p.dynamic=p.id==='project3'});(x.workEntries||[]).forEach(e=>{if(e.hours===undefined)e.hours=0;if(e.dailyTitle===undefined)e.dailyTitle=''});installDefaultTrainingPlan(x);applyTrainingPlanV17(x);applyTrainingPlanV18(x);applyKingOSV19(x);applyTrainingPlanV20(x);applyKingOSV20(x);applyKingOSV21(x);applyKingOSV22(x);applyKingOSV23(x);applyKingOSV24(x);applyKingOSV25(x);applyTrainingPlanV26(x);if(!x.settings.workoutCycleV15Initialized){for(const w of (x.workouts||[]).filter(w=>w.status==='active')){const entered=(x.sets||[]).some(s=>s.workoutId===w.id&&(Number(s.weight||0)>0||Number(s.reps||0)>0));if(!entered)w.status='cancelled'}x.settings.nextWorkoutTemplateId='tpl_c';x.settings.workoutCycleV15Initialized=true}x.schemaVersion=14;return x}
 db=loadDB();
 function getWorkEntry(date,projectId){return db.workEntries.find(x=>x.date===date&&x.projectId===projectId)}
 function ensureWorkEntry(date,projectId){let x=getWorkEntry(date,projectId);if(!x){x={id:uid('work'),date,projectId,completed:false,hours:0,note:'',dailyTitle:'',updatedAt:nowISO()};db.workEntries.push(x)}if(x.hours===undefined)x.hours=0;if(x.dailyTitle===undefined)x.dailyTitle='';return x}
@@ -880,7 +915,7 @@ function bindStaticUI(){
 }
 
 bindStaticUI();
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=25',{updateViaCache:'none'}).catch(()=>{}));
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=26',{updateViaCache:'none'}).catch(()=>{}));
 render();
 </script>
 </body>
