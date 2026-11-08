@@ -334,7 +334,7 @@
         const keys=await caches.keys();
         await Promise.all(keys.map(k=>caches.delete(k)));
       }
-      location.replace(location.pathname+'?v=340');
+      location.replace(location.pathname+'?v=341');
     }
   }catch(e){
     console.error('King OS cache repair failed',e);
@@ -346,7 +346,7 @@
 <body>
 <main class="app" id="app">
   <header class="header">
-    <div><div class="brand">KING <span>OS</span></div><div class="date"><span id="headerDate"></span> · V3.4.0</div></div>
+    <div><div class="brand">KING <span>OS</span></div><div class="date"><span id="headerDate"></span> · V3.4.1</div></div>
     <div class="top-actions"><button class="btn" id="reviewBtn">Review</button><button class="icon-btn" id="settingsBtn">⚙</button></div>
   </header>
 
@@ -588,8 +588,8 @@ const HISTORICAL_EXERCISES=[
 {id:"ex_mw3ndw28_6kflb4",name:"Подъем на носки сидя, икры"},
 {id:"ex_mw3ohrh9_thv93e",name:"Разведения гансэтелей на среднюю дельту"}
 ];
-const FREE_WORKOUT_START='2026-11-09';
-const FREE_WORKOUT_END='2026-11-22';
+const FREE_WORKOUT_START='2026-11-08';
+const FREE_WORKOUT_END='2026-11-21';
 const SPORT_V31_TEMPLATES=[
  {id:'tpl_push_a',name:'Push A',order:0,exercisePlans:[
  ['1','ex_a_press_db30',3,6,10],['2','ex_hack_squat',3,6,10],['3','ex_converging_chest_press',3,8,12],['4','ex_db_lateral_raise',4,12,20],['5A','ex_leg_extension',2,10,15,'ss1'],['5B','ex_overhead_triceps',2,8,12,'ss1'],['6','ex_cable_triceps',2,10,15]
@@ -1053,6 +1053,17 @@ function applyKingOSV34(target){
  return target;
 }
 
+function applyKingOSV341(target){
+ target.settings=target.settings||{};
+ if(target.settings.kingOSV341Applied)return target;
+ // Hotfix: the two-week free-training window starts immediately on 08.11.
+ target.settings.freeWorkoutStart='2026-11-08';
+ target.settings.freeWorkoutEnd='2026-11-21';
+ target.settings.wakeOnlyStart='2026-11-08';
+ target.settings.kingOSV341Applied=true;
+ return target;
+}
+
 function seedDB(){
   const start=isoDate();
   return installDefaultTrainingPlan({schemaVersion:2,settings:{startDate:start,readingDailyMin:15,workDailyHours:9,waistWeekday:0,photoIntervalDays:14,photoAnchorDate:start},readingPlans:[{id:'reading_1',startDate:start,endDate:null,minutes:15}],projects:[{id:'every',name:'ЭВЕРИ',goal:'',state:'',dynamic:false,createdDate:start},{id:'project3',name:'Другое',goal:'',state:'',dynamic:true,createdDate:start}],workEntries:[],workDayMarks:[],workInbox:[],workTasks:[],workPlans:[{id:'work_every_goals_v20',startDate:start,endDate:null,mode:'every_goals'}],sleepDaily:[],books:[],readingSessions:[],readingOverrides:[],readingNotes:[],exercises:[],programs:[{id:'program_main',name:'Full Body A–D',active:true,sequence:['tpl_a','tpl_b','tpl_c','tpl_d']}],workoutTemplates:defaultTemplates(),workouts:[],sets:[],sportDaily:[],nutritionPlans:[{id:'nutrition_1',startDate:start,endDate:null,kcal:0,protein:0,fat:0,carbs:0}],dailyNutrition:[],measurements:[],scheduledChecks:[],regimeDaily:[],dayNotes:[],dayOffs:[]});
@@ -1063,7 +1074,7 @@ function loadDB(){
   try{const legacyRaw=localStorage.getItem(LEGACY_KEY);if(legacyRaw){const old=JSON.parse(legacyRaw);fresh.settings.startDate='2026-08-21';fresh.settings.photoAnchorDate='2026-08-21';Object.entries(old.days||{}).forEach(([date,v])=>{if(v.every)fresh.workEntries.push({id:uid('work'),date,projectId:'every',completed:true,note:'',updatedAt:nowISO()});if(v.dark_every)fresh.workEntries.push({id:uid('work'),date,projectId:'dark_every',completed:true,note:'',updatedAt:nowISO()});if(v.boxing||v.sport_rest)fresh.sportDaily.push({date,boxing:!!v.boxing,rest:!!v.sport_rest});if(v.strength){fresh.workouts.push({id:uid('wo'),date,templateId:null,name:'Силовая',status:'completed',startedAt:null,endedAt:null,exerciseIds:[]})}if(v.porn||v.masturbation)fresh.regimeDaily.push({date,porn:!!v.porn,masturbation:!!v.masturbation});if(v.comment)fresh.dayNotes.push({date,text:v.comment})});}}catch(e){}
   const normalized=normalizeDB(fresh);localStorage.setItem(KEY,JSON.stringify(normalized));return normalized;
 }
-function normalizeDB(x){const base=seedDB();for(const k of Object.keys(base))if(x[k]===undefined)x[k]=base[k];x.settings={...base.settings,...x.settings};if(!Number(x.settings.workDailyHours))x.settings.workDailyHours=10;if(!x.projects.some(p=>p.id==='project3'))x.projects.push({id:'project3',name:'Проект 3',goal:'',state:'',dynamic:true});x.projects.forEach(p=>{if(p.dynamic===undefined)p.dynamic=p.id==='project3'});(x.workEntries||[]).forEach(e=>{if(e.hours===undefined)e.hours=0;if(e.dailyTitle===undefined)e.dailyTitle=''});installDefaultTrainingPlan(x);applyTrainingPlanV17(x);applyTrainingPlanV18(x);applyKingOSV19(x);applyTrainingPlanV20(x);applyKingOSV20(x);applyKingOSV21(x);applyKingOSV22(x);applyKingOSV23(x);applyKingOSV24(x);applyKingOSV25(x);applyTrainingPlanV26(x);applyKingOSV27(x);applyKingOSV28(x);applyKingOSV281(x);applyKingOSV30(x);applyKingOSV31(x);applyKingOSV32(x);applyKingOSV33(x);applyKingOSV34(x);if(!x.settings.workoutCycleV15Initialized){for(const w of (x.workouts||[]).filter(w=>w.status==='active')){const entered=(x.sets||[]).some(s=>s.workoutId===w.id&&(Number(s.weight||0)>0||Number(s.reps||0)>0));if(!entered)w.status='cancelled'}x.settings.nextWorkoutTemplateId='tpl_c';x.settings.workoutCycleV15Initialized=true}x.schemaVersion=21;return x}
+function normalizeDB(x){const base=seedDB();for(const k of Object.keys(base))if(x[k]===undefined)x[k]=base[k];x.settings={...base.settings,...x.settings};if(!Number(x.settings.workDailyHours))x.settings.workDailyHours=10;if(!x.projects.some(p=>p.id==='project3'))x.projects.push({id:'project3',name:'Проект 3',goal:'',state:'',dynamic:true});x.projects.forEach(p=>{if(p.dynamic===undefined)p.dynamic=p.id==='project3'});(x.workEntries||[]).forEach(e=>{if(e.hours===undefined)e.hours=0;if(e.dailyTitle===undefined)e.dailyTitle=''});installDefaultTrainingPlan(x);applyTrainingPlanV17(x);applyTrainingPlanV18(x);applyKingOSV19(x);applyTrainingPlanV20(x);applyKingOSV20(x);applyKingOSV21(x);applyKingOSV22(x);applyKingOSV23(x);applyKingOSV24(x);applyKingOSV25(x);applyTrainingPlanV26(x);applyKingOSV27(x);applyKingOSV28(x);applyKingOSV281(x);applyKingOSV30(x);applyKingOSV31(x);applyKingOSV32(x);applyKingOSV33(x);applyKingOSV34(x);applyKingOSV341(x);if(!x.settings.workoutCycleV15Initialized){for(const w of (x.workouts||[]).filter(w=>w.status==='active')){const entered=(x.sets||[]).some(s=>s.workoutId===w.id&&(Number(s.weight||0)>0||Number(s.reps||0)>0));if(!entered)w.status='cancelled'}x.settings.nextWorkoutTemplateId='tpl_c';x.settings.workoutCycleV15Initialized=true}x.schemaVersion=22;return x}
 db=loadDB();
 function getWorkEntry(date,projectId){return db.workEntries.find(x=>x.date===date&&x.projectId===projectId)}
 function ensureWorkEntry(date,projectId){let x=getWorkEntry(date,projectId);if(!x){x={id:uid('work'),date,projectId,completed:false,hours:0,note:'',dailyTitle:'',updatedAt:nowISO()};db.workEntries.push(x)}if(x.hours===undefined)x.hours=0;if(x.dailyTitle===undefined)x.dailyTitle='';return x}
@@ -1679,7 +1690,7 @@ function bindStaticUI(){
 }
 
 bindStaticUI();
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=320',{updateViaCache:'none'}).catch(()=>{}));
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=341',{updateViaCache:'none'}).catch(()=>{}));
 render();
 </script>
 </body>
